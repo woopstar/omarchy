@@ -11,6 +11,8 @@
   "modules-center": [
     "clock",
     "custom/update",
+    "custom/reboot-required",
+    "custom/relaunch-required",
     "custom/screenrecording-indicator",
     "privacy"
   ],
@@ -59,6 +61,21 @@
     "signal": 7,
     "interval": 3600
   },
+  "custom/reboot-required": {
+    "format": "󰜉",
+    "exec": "omarchy-reboot-required",
+    "on-click": "omarchy-launch-floating-terminal-with-presentation omarchy-update-restart",
+    "tooltip-format": "Omarchy needs to reboot",
+    "signal": 7
+  },
+  "custom/relaunch-required": {
+    "format": "",
+    "exec": "omarchy-relaunch-required",
+    "on-click": "omarchy-launch-floating-terminal-with-presentation omarchy-update-restart",
+    "tooltip-format": "Hyprland needs to relaunch",
+    "signal": 7
+  },
+
   "cpu": {
     "interval": 5,
     "format": "󰍛",

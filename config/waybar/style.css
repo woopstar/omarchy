@@ -39,6 +39,8 @@
 #privacy,
 #custom-omarchy,
 #custom-screenrecording-indicator,
+#custom-relaunch-required,
+#custom-reboot-required,
 #custom-update {
   min-width: 12px;
   margin: 0 7.5px;
@@ -52,6 +54,7 @@ tooltip {
   padding: 2px;
 }
 
+#custom-relaunch-required,
 #custom-update {
   font-size: 10px;
 }
