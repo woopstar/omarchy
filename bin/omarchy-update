@@ -5,3 +5,5 @@ set -e
 omarchy-snapshot create || [ $? -eq 127 ]
 omarchy-update-git
 omarchy-update-perform
+
+chmod +x $OMARCHY_PATH/bin/omarchy-*
