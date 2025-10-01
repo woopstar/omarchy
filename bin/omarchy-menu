@@ -456,9 +456,9 @@ show_system_menu() {
   *Screensaver*) omarchy-launch-screensaver force ;;
   *Suspend*) systemctl suspend ;;
   *Hibernate*) systemctl hibernate;;
-  *Relaunch*) uwsm stop ;;
-  *Restart*) systemctl reboot ;;
-  *Shutdown*) systemctl poweroff ;;
+  *Relaunch*) omarchy-state clear relaunch-required && uwsm stop ;;
+  *Restart*) omarchy-state clear re*-required && systemctl reboot ;;
+  *Shutdown*) omarchy-state clear re*-required && systemctl poweroff ;;
   *) back_to show_main_menu ;;
   esac
 }
