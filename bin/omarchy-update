@@ -7,3 +7,4 @@ omarchy-update-git
 omarchy-update-perform
 
 chmod +x $OMARCHY_PATH/bin/omarchy-*
+chmod +x $OMARCHY_PATH/default/waybar/indicators/*.sh
