@@ -1,3 +1,3 @@
 #!/bin/bash
 
-exec setsid uwsm-app -- "$TERMINAL" --class=Bluetui -e Bluetui "$@"
+exec setsid uwsm-app -- "$TERMINAL" --class=bluetui -e bluetui "$@"
