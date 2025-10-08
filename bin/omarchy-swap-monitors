@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Rotate workspaces across all monitors in Hyprland/Omarchy
+
+readonly TMP_WORKSPACE=999
+readonly APP_NAME="Omarchy"
+
+mapfile -t MONITORS < <(hyprctl monitors -j | jq -r '.[].name')
+
+if (( ${#MONITORS[@]} < 2 )); then
+    notify-send "$APP_NAME" "Only one monitor detected — nothing to rotate."
+    exit 0
+fi
+
+get_active_workspace() {
+    hyprctl monitors -j | jq -r ".[] | select(.name==\"$1\") | .activeWorkspace.id"
+}
+
+# Store all active workspaces
+declare -a WORKSPACES
+for mon in "${MONITORS[@]}"; do
+    ws=$(get_active_workspace "$mon")
+    if [[ -z "$ws" ]]; then
+        notify-send "$APP_NAME" "Could not detect workspace on $mon."
+        exit 1
+    fi
+    WORKSPACES+=("$ws")
+done
+
+# Move current workspace to temp
+hyprctl dispatch workspace "$TMP_WORKSPACE"
+hyprctl dispatch moveworkspacetomonitor "$TMP_WORKSPACE" "${MONITORS[0]}"
+
+# Rotate: each monitor gets the workspace from the previous monitor
+for (( i=${#MONITORS[@]}-1; i>=0; i-- )); do
+    prev_idx=$(( (i - 1 + ${#MONITORS[@]}) % ${#MONITORS[@]} ))
+    hyprctl dispatch moveworkspacetomonitor "${WORKSPACES[$prev_idx]}" "${MONITORS[$i]}"
+done
+
+# Focus the workspace that moved to the first monitor
+hyprctl dispatch workspace "${WORKSPACES[-1]}"
+
+notify-send "$APP_NAME" "Rotated workspaces across ${#MONITORS[@]} monitors."
