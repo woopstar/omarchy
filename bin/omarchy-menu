@@ -175,7 +175,7 @@ show_setup_menu() {
   local options="  Audio\n  Wifi\n󰂯  Bluetooth\n󱐋  Power Profile\n󰍹  Monitors"
   [ -f ~/.config/hypr/bindings.conf ] && options="$options\n  Keybindings"
   [ -f ~/.config/hypr/input.conf ] && options="$options\n  Input"
-  options="$options\n󰌌 Language  Defaults\n󰱔  DNS\n Shell\n Security\n  Config"
+  options="$options\n󰌌 Language\n  Defaults\n󰱔  DNS\n Shell\n Security\n  Config"
 
   case $(menu "Setup" "$options") in
   *Audio*) $TERMINAL --class=Wiremix -e wiremix ;;
