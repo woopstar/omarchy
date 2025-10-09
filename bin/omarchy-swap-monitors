@@ -1,8 +1,24 @@
 #!/usr/bin/env bash
 # Rotate workspaces across all monitors in Hyprland/Omarchy
 
-readonly TMP_WORKSPACE=999
 readonly APP_NAME="Omarchy"
+
+dispatch() {
+    local output
+    if ! output=$(hyprctl dispatch "$@" 2>&1); then
+        notify-send "$APP_NAME" "hyprctl dispatch failed: $output"
+        exit 1
+    fi
+
+    if [[ "$output" != "ok" ]]; then
+        notify-send "$APP_NAME" "$output"
+        exit 1
+    fi
+}
+
+get_active_workspace() {
+    hyprctl monitors -j | jq -r ".[] | select(.name==\"$1\") | .activeWorkspace.id"
+}
 
 mapfile -t MONITORS < <(hyprctl monitors -j | jq -r '.[].name')
 
@@ -11,32 +27,28 @@ if (( ${#MONITORS[@]} < 2 )); then
     exit 0
 fi
 
-get_active_workspace() {
-    hyprctl monitors -j | jq -r ".[] | select(.name==\"$1\") | .activeWorkspace.id"
-}
+ORIGINAL_MONITOR=$(hyprctl monitors -j | jq -r '.[] | select(.focused == true) | .name')
 
-# Store all active workspaces
-declare -a WORKSPACES
+if [[ -z "$ORIGINAL_MONITOR" || "$ORIGINAL_MONITOR" == "null" ]]; then
+    notify-send "$APP_NAME" "Could not detect the focused monitor."
+    exit 1
+fi
+
+# Validate that every monitor has an active workspace before rotating.
 for mon in "${MONITORS[@]}"; do
     ws=$(get_active_workspace "$mon")
-    if [[ -z "$ws" ]]; then
+    if [[ -z "$ws" || "$ws" == "null" ]]; then
         notify-send "$APP_NAME" "Could not detect workspace on $mon."
         exit 1
     fi
-    WORKSPACES+=("$ws")
 done
 
-# Move current workspace to temp
-hyprctl dispatch workspace "$TMP_WORKSPACE"
-hyprctl dispatch moveworkspacetomonitor "$TMP_WORKSPACE" "${MONITORS[0]}"
-
-# Rotate: each monitor gets the workspace from the previous monitor
-for (( i=${#MONITORS[@]}-1; i>=0; i-- )); do
-    prev_idx=$(( (i - 1 + ${#MONITORS[@]}) % ${#MONITORS[@]} ))
-    hyprctl dispatch moveworkspacetomonitor "${WORKSPACES[$prev_idx]}" "${MONITORS[$i]}"
+# Swap neighbouring monitors from right-to-left to rotate without creating temps.
+for (( i=${#MONITORS[@]}-1; i>=1; i-- )); do
+    dispatch swapactiveworkspaces "${MONITORS[$((i-1))]}" "${MONITORS[$i]}"
 done
 
-# Focus the workspace that moved to the first monitor
-hyprctl dispatch workspace "${WORKSPACES[-1]}"
+# Ensure focus returns to the monitor the user was on.
+dispatch focusmonitor "$ORIGINAL_MONITOR"
 
 notify-send "$APP_NAME" "Rotated workspaces across ${#MONITORS[@]} monitors."
