@@ -3,6 +3,7 @@
 
 1password-beta
 1password-cli
+aether
 alacritty
 asdcontrol
 avahi
@@ -48,16 +49,17 @@ github-cli
 gnome-calculator
 gnome-keyring
 gnome-themes-extra
+grim
 gpu-screen-recorder
 gum
 gvfs-mtp
+gvfs-nfs
 gvfs-smb
 hypridle
 hyprland
 hyprland-qtutils
 hyprlock
 hyprpicker
-hyprshot
 hyprsunset
 imagemagick
 impala
@@ -93,7 +95,7 @@ nvim
 obs-studio
 obsidian
 omarchy-chromium
-omarchy-lazyvim
+omarchy-nvim
 pamixer
 pinta
 playerctl
@@ -130,11 +132,11 @@ unzip
 uwsm
 walker
 waybar
+wayfreeze-git
 whois
 wireless-regdb
 wiremix
 wireplumber
-wl-clip-persist
 wl-clipboard
 woff2-font-awesome
 xdg-desktop-portal-gtk
