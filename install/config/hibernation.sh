@@ -5,7 +5,7 @@
 SWAP_SUBVOLUME="/swap"
 if ! sudo btrfs subvolume show $SWAP_SUBVOLUME &>/dev/null ; then
   echo 'Creating Btrfs subvolume'
-  sudo btrfs subvolume create "$SWAP_SUBVOLUME" 
+  sudo btrfs subvolume create "$SWAP_SUBVOLUME"
 else
   echo "Btrfs subvolume $SWAP_SUBVOLUME already exists"
 fi
@@ -41,7 +41,7 @@ if [ ! -f "$MKINITCPIO_CONF" ] || ! grep -q "^${HOOKS_LINE}$" "$MKINITCPIO_CONF"
   echo "$HOOKS_LINE" | sudo tee -a "$MKINITCPIO_CONF" >/dev/null
 
   echo "Regenerating initramfs..."
-  sudo mkinitcpio -P
+  sudo limine-mkinitcpio
   echo "Hibernation enabled"
 else
   echo "Hibernation hooks already enabled"
